@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(morse_translator)
+set(PROJECT_NAME "morse_translator")
+project(${PROJECT_NAME})
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -49,25 +50,20 @@ include_directories(
  ${catkin_INCLUDE_DIRS}
 )
 
-message("CATKIN INCLUDES:${catkin_INCLUDE_DIRS}")
-
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
-add_executable(morse_translator src/morse_translator.cpp)
-target_link_libraries(morse_translator ${catkin_LIBRARIES})
-target_link_libraries(morse_translator Threads::Threads)
-add_dependencies(morse_translator morse_translator_generate_messages_cpp)
+add_executable(${PROJECT_NAME} src/${PROJECT_NAME}.cpp)
+target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} Threads::Threads)
+add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_generate_messages_cpp)
 
 #############
 ## Testing ##
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_morse_translator.cpp)
+catkin_add_gtest(${PROJECT_NAME}-test test/test_${PROJECT_NAME}.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
-
-## Add folders to be run by python nosetests
-# catkin_add_nosetests(test)
