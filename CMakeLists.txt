@@ -32,12 +32,7 @@ generate_messages(
 ## LIBRARIES: libraries you create in this project that dependent projects also need
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
-catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES morse_translator
-   CATKIN_DEPENDS roscpp message_generation
-#  DEPENDS system_lib
-)
+catkin_package(CATKIN_DEPENDS roscpp message_generation)
 
 ###########
 ## Build ##
@@ -64,11 +59,5 @@ add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_generate_messages_cpp)
 ## Add gtest based cpp test target and link libraries.
 add_library(lib_${PROJECT_NAME} src/${PROJECT_NAME}.cpp)
 catkin_add_gtest(test_${PROJECT_NAME} test/test_${PROJECT_NAME}.cpp)
-set_target_properties(test_${PROJECT_NAME} PROPERTIES LINK_FLAGS "-etest_main")
 target_link_libraries(test_${PROJECT_NAME} ${catkin_LIBRARIES} Threads::Threads lib_${PROJECT_NAME})
 add_dependencies(test_${PROJECT_NAME} ${PROJECT_NAME}_generate_messages_cpp)
-
-## Add a script file to run the tests.
-file(WRITE "testo_pesto.sh" "#!${BASH}\n")
-
-message(${catkin_LIBRARIES})
