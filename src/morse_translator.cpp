@@ -27,7 +27,7 @@ bool verify_alphanumeric(std::string str)
 {
     for (int i = 0; i < str.length(); i++)
     {
-        if(!std::isalnum(str[i]))
+        if(!std::isalnum(str[i]) && str[i] != ' ')
         {
             return false;
         }

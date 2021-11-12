@@ -1,14 +1,15 @@
-#include "morse_translator_node/MorseTranslator.h"
+#include "morse_translator.hpp"
 
 #include <gtest/gtest.h>
 
-TEST(TranslationTest, DogTest)
+TEST(TranslationTest, Alphanumeric_Verification_Test)
 {
-    ASSERT_TRUE(1 == 1);
+    ASSERT_TRUE(verify_alphanumeric("195 Dogs"));
+    ASSERT_FALSE(verify_alphanumeric("$195.00 for the #1 Dog"));
 }
 
-// Run all the tests that were declared with TEST()
-int main(int argc, char **argv){
+int test_main(int argc, char **argv)
+{
     testing::InitGoogleTest(&argc, argv);
     ros::init(argc, argv, "tester");
     ros::NodeHandle nh;

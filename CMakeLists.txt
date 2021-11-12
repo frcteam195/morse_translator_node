@@ -61,5 +61,14 @@ add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_generate_messages_cpp)
 ## Testing ##
 #############
 
-## Add gtest based cpp test target and link libraries
-catkin_add_gtest(${PROJECT_NAME}-test test/test_${PROJECT_NAME}.cpp)
+## Add gtest based cpp test target and link libraries.
+add_library(lib_${PROJECT_NAME} src/${PROJECT_NAME}.cpp)
+catkin_add_gtest(test_${PROJECT_NAME} test/test_${PROJECT_NAME}.cpp)
+set_target_properties(test_${PROJECT_NAME} PROPERTIES LINK_FLAGS "-etest_main")
+target_link_libraries(test_${PROJECT_NAME} ${catkin_LIBRARIES} Threads::Threads lib_${PROJECT_NAME})
+add_dependencies(test_${PROJECT_NAME} ${PROJECT_NAME}_generate_messages_cpp)
+
+## Add a script file to run the tests.
+file(WRITE "testo_pesto.sh" "#!${BASH}\n")
+
+message(${catkin_LIBRARIES})
