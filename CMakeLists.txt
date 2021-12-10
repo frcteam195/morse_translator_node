@@ -48,16 +48,23 @@ include_directories(
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
-add_executable(${PROJECT_NAME} src/${PROJECT_NAME}.cpp)
+file(GLOB_RECURSE EXECUTABLE_SOURCES CONFIGURE_DEPENDS
+     "${PROJECT_SOURCE_DIR}/src/*.cpp"
+)
+
+file(GLOB_RECURSE TEST_SOURCES CONFIGURE_DEPENDS
+     "${PROJECT_SOURCE_DIR}/test/src/*.cpp"
+)
+
+add_executable(${PROJECT_NAME} ${EXECUTABLE_SOURCES})
+set_property(TARGET ${PROJECT_NAME} PROPERTY ENABLE_EXPORTS 1)
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} Threads::Threads)
 add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_generate_messages_cpp)
 
 #############
 ## Testing ##
 #############
-
-## Add gtest based cpp test target and link libraries.
-add_library(lib_${PROJECT_NAME} src/${PROJECT_NAME}.cpp)
-catkin_add_gtest(test_${PROJECT_NAME} test/test_${PROJECT_NAME}.cpp)
-target_link_libraries(test_${PROJECT_NAME} ${catkin_LIBRARIES} Threads::Threads lib_${PROJECT_NAME})
-add_dependencies(test_${PROJECT_NAME} ${PROJECT_NAME}_generate_messages_cpp)
+catkin_add_gtest(${PROJECT_NAME}-test ${TEST_SOURCES})
+if(TARGET ${PROJECT_NAME}-test)
+  target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
+endif()
