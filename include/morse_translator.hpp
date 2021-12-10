@@ -46,11 +46,23 @@ std::map<char, std::string> morse_character_chart = {
     {'.', ".-.-.-"},
     {',', "--..--"},
     {'?', "..--.."},
+    {'\'', ".----."},
+    {'!', "-.-.--"},
+    {'/', "-..-."},
+    {'(', "-.--."},
+    {')', "-.--.-"},
+    {'&', ".-..."},
+    {':', "---..."},
+    {';', "-.-.-."},
     {'=', "-...-"},
+    {'+', ".-.-."},
+    {'-', "-....-"},
+    {'_', "..--.-"},
+    {'"', ".-..-."},
+    {'$', "...-..-"},
+    {'@', ".--.-."},
     {' ', "|"}};
 
 bool translate(morse_translator::MorseTranslator::Request &request, morse_translator::MorseTranslator::Response &response);
-
-bool verify_alphanumeric(std::string str);
 
 #endif // MORSE_TRANSLATOR_HPP

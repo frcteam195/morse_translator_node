@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.0.2)
 set(PROJECT_NAME "morse_translator")
 project(${PROJECT_NAME})
 
+add_compile_options(-std=c++11)
+
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
@@ -32,7 +34,9 @@ generate_messages(
 ## LIBRARIES: libraries you create in this project that dependent projects also need
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
-catkin_package(CATKIN_DEPENDS roscpp message_generation)
+catkin_package(
+  CATKIN_DEPENDS roscpp message_generation
+)
 
 ###########
 ## Build ##
@@ -48,16 +52,18 @@ include_directories(
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
-add_executable(${PROJECT_NAME} src/${PROJECT_NAME}.cpp)
-target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} Threads::Threads)
+file(GLOB_RECURSE EXECUTABLE_SOURCES CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/src/*.cpp")
+
+add_executable(${PROJECT_NAME} ${EXECUTABLE_SOURCES})
 add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_generate_messages_cpp)
+target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} Threads::Threads)
 
 #############
 ## Testing ##
 #############
+file(GLOB_RECURSE TEST_SOURCES CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/test/src/*.cpp")
 
-## Add gtest based cpp test target and link libraries.
-add_library(lib_${PROJECT_NAME} src/${PROJECT_NAME}.cpp)
-catkin_add_gtest(test_${PROJECT_NAME} test/test_${PROJECT_NAME}.cpp)
-target_link_libraries(test_${PROJECT_NAME} ${catkin_LIBRARIES} Threads::Threads lib_${PROJECT_NAME})
-add_dependencies(test_${PROJECT_NAME} ${PROJECT_NAME}_generate_messages_cpp)
+add_library(${PROJECT_NAME}-lib ${EXECUTABLE_SOURCES})
+catkin_add_gtest(${PROJECT_NAME}-test ${TEST_SOURCES})
+add_dependencies(${PROJECT_NAME}-test ${PROJECT_NAME}_generate_messages_cpp)
+target_link_libraries(${PROJECT_NAME}-test ${catkin_LIBRARIES} Threads::Threads ${PROJECT_NAME}-lib)

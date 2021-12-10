@@ -3,36 +3,58 @@
 #include <locale>
 #include <sstream>
 
-bool translate(morse_translator::MorseTranslator::Request  &request, morse_translator::MorseTranslator::Response &response)
+bool translate(morse_translator::MorseTranslator::Request &request, morse_translator::MorseTranslator::Response &response)
 {
     ROS_INFO("Translation Request: %s", request.input.c_str());
-    
-    if (verify_alphanumeric(request.input))
+
+    std::stringstream translation, translated_word;
+
+    // Split the provided string into a list of words.
+    size_t previous_position, current_position = 0;
+    std::vector<std::string> words;
+
+    while (request.input.find(' ', previous_position) != std::string::npos)
     {
-        std::stringstream translation;
-
-        for(int i = 0; i < request.input.length(); i++)
-        {
-           translation << morse_character_chart[std::toupper(request.input[i])];
-        }
-
-        response.output = translation.str();
-        return true;
+        current_position = request.input.find(' ', previous_position);
+        words.push_back(request.input.substr(previous_position, current_position - previous_position));
+        previous_position = current_position + 1;
     }
 
-    return false;
-}
+    words.push_back(request.input.substr(current_position));
 
-bool verify_alphanumeric(std::string str)
-{
-    for (int i = 0; i < str.length(); i++)
+    for (std::string word : words)
     {
-        if(!std::isalnum(str[i]) && str[i] != ' ')
+        translated_word.str("");
+
+        for (int i = 0; i < word.length(); i++)
         {
-            return false;
+            auto morse_character_iterator = morse_character_chart.find(std::toupper(word[i]));
+            if (morse_character_iterator != morse_character_chart.end())
+            {
+                translated_word << morse_character_iterator->second;
+            }
+            else
+            {
+                ROS_ERROR("String provided to morse translator contains characters not present in the translation chart!");
+                response.output = "..-. .- .. .-..";
+                return false;
+            }
+
+            if (i < word.length() - 1)
+            {
+                translated_word << " ";
+            }
+        }
+
+        translation << translated_word.str();
+
+        if (word != words.back())
+        {
+            translation << " | ";
         }
     }
 
+    response.output = translation.str();
     return true;
 }
 
